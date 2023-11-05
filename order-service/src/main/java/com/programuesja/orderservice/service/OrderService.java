@@ -14,15 +14,15 @@ import java.util.UUID;
 @Service
 public class OrderService {
 
-    public static final String INVENTORY_URL = "http://localhost:8082/api/inventory";
+    public static final String INVENTORY_URL = "http://inventory-service/api/inventory";
 
     private OrderRepository orderRepository;
 
-    private WebClient webClient;
+    private WebClient.Builder webClientBuilder;
 
-    public OrderService(OrderRepository orderRepository, WebClient webClient) {
+    public OrderService(OrderRepository orderRepository, WebClient.Builder webClientBuilder) {
         this.orderRepository = orderRepository;
-        this.webClient = webClient;
+        this.webClientBuilder = webClientBuilder;
     }
 
     public void placeOrder(List<OrderItems> orderItemsList) {
@@ -32,7 +32,7 @@ public class OrderService {
 
         List<String> skuCodes = order.getOrderItemsList().stream().map(OrderItems::getSkuCode).toList();
 
-        InventoryResponse[] inventoryResponseArray = webClient.get()
+        InventoryResponse[] inventoryResponseArray = webClientBuilder.build().get()
                                      .uri(INVENTORY_URL,
                                              uriBuilder -> uriBuilder.queryParam("skuCode", skuCodes).build())
                                      .retrieve()
