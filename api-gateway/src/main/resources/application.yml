@@ -37,6 +37,11 @@ spring:
           uri: http://eureka:password@${app.eureka-server}:8761
           predicates:
             - Path=/eureka/**
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8181/realms/online-shop-microservices-realm
 
 logging:
   level:
