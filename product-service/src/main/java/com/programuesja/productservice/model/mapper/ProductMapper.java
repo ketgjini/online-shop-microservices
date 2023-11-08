@@ -17,7 +17,7 @@ public abstract class ProductMapper {
     public abstract ProductResponse toResponse(final Product product);
     public abstract Product toProduct(final ProductRequest productRequest);
 
-    public List<ProductResponse> toResponseList(List<Product> products) {
+    public List<ProductResponse> toResponseList(final List<Product> products) {
         if (products == null) {
             return Collections.emptyList();
         }

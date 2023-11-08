@@ -11,7 +11,7 @@ import java.util.List;
 public abstract class OrderItemMapper {
     public abstract List<OrderItems> toOrderItems(final List<OrderItemsDTO> orderItemsDTOList);
 
-    OrderItems toOrderItems(OrderItemsDTO orderItemsDTO) {
+    OrderItems toOrderItems(final OrderItemsDTO orderItemsDTO) {
         if (orderItemsDTO == null) {
             return null;
         }

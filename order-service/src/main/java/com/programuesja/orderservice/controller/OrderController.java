@@ -23,11 +23,11 @@ public class OrderController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OrderController.class);
 
-    private OrderService orderService;
+    private final OrderService orderService;
 
-    private OrderItemMapper mapper;
+    private final OrderItemMapper mapper;
 
-    public OrderController(OrderService orderService, OrderItemMapper mapper) {
+    public OrderController(final OrderService orderService, final OrderItemMapper mapper) {
         this.orderService = orderService;
         this.mapper = mapper;
     }
@@ -36,13 +36,14 @@ public class OrderController {
     @CircuitBreaker(name = "inventory", fallbackMethod = "inventoryFallbackMethod")
     @TimeLimiter(name = "inventory")
     @Retry(name = "inventory")
-    public CompletableFuture<ResponseEntity<?>> placeOrder(@RequestBody OrderRequest orderRequest) {
+    public CompletableFuture<ResponseEntity<?>> placeOrder(@RequestBody final OrderRequest orderRequest) {
         orderService.placeOrder(mapper.toOrderItems(orderRequest.getOrderItemsDTOList()));
         return CompletableFuture.supplyAsync(() -> ResponseEntity.status(HttpStatus.CREATED)
                 .body("Order placed successfully"));
     }
 
-    public CompletableFuture<ResponseEntity<?>> inventoryFallbackMethod(OrderRequest orderRequest, Throwable t) {
+    /** Fallback method when circuit breaker STATUS is not CLOSED */
+    public CompletableFuture<ResponseEntity<?>> inventoryFallbackMethod(final OrderRequest orderRequest, final Throwable t) {
         LOGGER.warn("Fallback method invoked due to circuit open.");
         return CompletableFuture.supplyAsync(() -> ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body("Oops! Something went wrong with your order. Please try again in a bit."));

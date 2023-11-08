@@ -12,13 +12,14 @@ import java.util.List;
 public class ProductService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProductService.class);
-    private ProductRepository productRepository;
 
-    public ProductService(ProductRepository productRepository) {
+    private final ProductRepository productRepository;
+
+    public ProductService(final ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
 
-    public void createProduct(Product product) {
+    public void createProduct(final Product product) {
         productRepository.save(product);
         LOGGER.info("Product {} is saved ", product.getId());
     }
