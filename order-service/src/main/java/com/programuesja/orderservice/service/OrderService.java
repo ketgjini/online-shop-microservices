@@ -32,16 +32,11 @@ public class OrderService {
 
         List<String> skuCodes = order.getOrderItemsList().stream().map(OrderItems::getSkuCode).toList();
 
-        InventoryResponse[] inventoryResponseArray = webClientBuilder.build().get()
-                                     .uri(INVENTORY_URL,
-                                             uriBuilder -> uriBuilder.queryParam("skuCode", skuCodes).build())
-                                     .retrieve()
-                                     .bodyToMono(InventoryResponse[].class)
-                                     .block();
+        List<InventoryResponse> inventoryResponses = fetchInventoryResponses(skuCodes);
 
         boolean allProductsInStock = false;
-        if(inventoryResponseArray.length > 0) {
-            allProductsInStock =  Arrays.stream(inventoryResponseArray).allMatch(InventoryResponse::isInStock);
+        if(!inventoryResponses.isEmpty()) {
+            allProductsInStock = inventoryResponses.stream().allMatch(InventoryResponse::isInStock);
         }
 
         if(allProductsInStock) {
@@ -49,5 +44,16 @@ public class OrderService {
         } else {
             throw new IllegalArgumentException("Product is not in stock. Try again later!");
         }
+    }
+
+    private List<InventoryResponse> fetchInventoryResponses(List<String> skuCodes) {
+        WebClient webClient = webClientBuilder.build();
+
+        return webClient.get()
+                .uri(INVENTORY_URL, uriBuilder -> uriBuilder.queryParam("skuCode", skuCodes).build())
+                .retrieve()
+                .bodyToFlux(InventoryResponse.class)
+                .collectList()
+                .block();
     }
 }
