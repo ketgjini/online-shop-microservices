@@ -15,16 +15,16 @@ public class InventoryService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(InventoryService.class);
 
-    private InventoryRepository inventoryRepository;
+    private final InventoryRepository inventoryRepository;
 
-    public InventoryService(InventoryRepository inventoryRepository) {
+    public InventoryService(final InventoryRepository inventoryRepository) {
         this.inventoryRepository = inventoryRepository;
     }
 
     @Transactional(readOnly = true)
     public List<InventoryResponse> isInStock(final List<String> skuCodes) {
         LOGGER.info("Checking inventory...");
-        List<Inventory> inventories = inventoryRepository.findBySkuCodeIn(skuCodes);
+        final List<Inventory> inventories = inventoryRepository.findBySkuCodeIn(skuCodes);
         return inventories.stream()
                 .map(inventory ->
                         InventoryResponse.builder()

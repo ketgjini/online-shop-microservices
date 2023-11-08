@@ -15,25 +15,25 @@ import java.util.List;
 public class ProductController {
 
     /** Mapper class for product */
-    ProductMapper productMapper;
+    private final ProductMapper productMapper;
 
     /** Service class for product */
-    ProductService productService;
+    private final ProductService productService;
 
-    public ProductController(ProductMapper productMapper, ProductService productService) {
+    public ProductController(final ProductMapper productMapper, final ProductService productService) {
         this.productMapper = productMapper;
         this.productService = productService;
     }
 
     @PostMapping("/product/create")
-    public ResponseEntity<?> createProduct(@RequestBody ProductRequest productRequest) {
+    public ResponseEntity<?> createProduct(@RequestBody final ProductRequest productRequest) {
         productService.createProduct(productMapper.toProduct(productRequest));
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @GetMapping("/all")
     public ResponseEntity<?> getAllProducts() {
-        List<ProductResponse> products = productMapper.toResponseList(productService.getAllProducts());
+        final List<ProductResponse> products = productMapper.toResponseList(productService.getAllProducts());
         return products.isEmpty() ?
                 ResponseEntity.status(HttpStatus.NOT_FOUND).body("Could not find products") :
                 ResponseEntity.status(HttpStatus.OK).body(products);

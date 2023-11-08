@@ -11,16 +11,15 @@ import java.util.List;
 @RequestMapping("/api/inventory")
 public class InventoryController {
 
-    private InventoryService inventoryService;
+    private final InventoryService inventoryService;
 
-    public InventoryController(InventoryService inventoryService) {
+    public InventoryController(final InventoryService inventoryService) {
         this.inventoryService = inventoryService;
     }
 
     @GetMapping()
     @ResponseStatus(HttpStatus.OK)
-    public List<InventoryResponse> isInStock(@RequestParam List<String> skuCode) {
-        List<InventoryResponse> responses = inventoryService.isInStock(skuCode);
-        return responses;
+    public List<InventoryResponse> isInStock(@RequestParam final List<String> skuCode) {
+        return inventoryService.isInStock(skuCode);
     }
 }
