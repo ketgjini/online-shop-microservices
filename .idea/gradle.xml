@@ -35,6 +35,16 @@
       </GradleProjectSettings>
       <GradleProjectSettings>
         <option name="distributionType" value="DEFAULT_WRAPPED" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/notification-service" />
+        <option name="gradleHome" value="$PROJECT_DIR$/../../../../../../../Program Files/Gradle/gradle-7.4" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/notification-service" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="distributionType" value="DEFAULT_WRAPPED" />
         <option name="externalProjectPath" value="$PROJECT_DIR$/order-service" />
         <option name="gradleHome" value="$PROJECT_DIR$/../../../../../../../Program Files/Gradle/gradle-7.4" />
         <option name="modules">

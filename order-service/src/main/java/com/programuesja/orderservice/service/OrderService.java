@@ -1,11 +1,13 @@
 package com.programuesja.orderservice.service;
 
 import com.programuesja.orderservice.dto.InventoryResponse;
+import com.programuesja.orderservice.event.OrderPlacedEvent;
 import com.programuesja.orderservice.model.Order;
 import com.programuesja.orderservice.model.OrderItems;
 import com.programuesja.orderservice.repository.OrderRepository;
 import io.micrometer.observation.Observation;
 import io.micrometer.observation.ObservationRegistry;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -23,10 +25,14 @@ public class OrderService {
 
     private final ObservationRegistry observationRegistry;
 
-    public OrderService(OrderRepository orderRepository, WebClient.Builder webClientBuilder, ObservationRegistry observationRegistry) {
+    private final KafkaTemplate<String, OrderPlacedEvent> kafkaTemplate;
+
+    public OrderService(OrderRepository orderRepository, WebClient.Builder webClientBuilder,
+                        ObservationRegistry observationRegistry, KafkaTemplate kafkaTemplate) {
         this.orderRepository = orderRepository;
         this.webClientBuilder = webClientBuilder;
         this.observationRegistry = observationRegistry;
+        this.kafkaTemplate = kafkaTemplate;
     }
 
     public void placeOrder(final List<OrderItems> orderItemsList) {
@@ -50,6 +56,7 @@ public class OrderService {
 
             if(allProductsInStock) {
                 orderRepository.save(order);
+                kafkaTemplate.send("notificationTopic", new OrderPlacedEvent(order.getOrderNumber()));
             } else {
                 throw new IllegalArgumentException("Product is not in stock. Try again later!");
             }
